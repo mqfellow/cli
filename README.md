@@ -1,6 +1,8 @@
 # cli
 Docker MQ CLI
 
+Reset the login/pass - git config --global --unset credential.helper
+
 ## Simple VPC with public subnet
 
 ### docker run --env-file=../env.txt -it mqfellow/cli:latest create-simple-vpc-public-subnet dec27
