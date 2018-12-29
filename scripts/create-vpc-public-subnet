@@ -7,6 +7,7 @@
 #MF_INSTANCE_TYPE - instance type - t2.large
 #MF_PUBLIC_IP1 - public up from AWS EIP
 #MF_IAM_ROLE - AWS IAM role with S3 full access
+#MF_S3_BUCKET_NAME - bucket name
 #MF_AVAILABILITY_ZONE - AZ to use.
 #MF_USER_DATA_LOCATION - userdata to use
 
@@ -96,7 +97,7 @@ ls -al .
 
 cat $MF_ID-output.json
 
-aws s3 cp $MF_ID-output.json s3://mqfellow-us-east-1/mq-output/$MF_ID-output.json
+aws s3 cp $MF_ID-output.json s3://$MF_S3_BUCKET_NAME/mq-output/$MF_ID-output.json
 
 
 
