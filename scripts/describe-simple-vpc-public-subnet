@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#Requires:
+#1 - first argument - filename of stack
+
+aws s3 cp s3://mqfellow-us-east-1/mq-output/$1-output.json $1-output.json
+cat $1-output.json
+jq . $1-output.json
+
