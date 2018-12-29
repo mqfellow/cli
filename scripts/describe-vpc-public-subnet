@@ -8,3 +8,8 @@ aws s3 cp s3://$MF_S3_BUCKET_NAME/mq-output/$MF_ID-output.json $MF_ID-output.jso
 cat $MF_ID-output.json
 jq . $MF_ID-output.json
 
+MF_INSTANCE_IP1=`cat $MF_ID-output.json | jq --raw-output '.instanceId'`
+echo $MF_INSTANCE_IP1
+aws ec2 describe-instances --instance-ids $MF_INSTANCE_IP1
+
+
