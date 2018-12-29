@@ -1,15 +1,14 @@
 #!/bin/sh
 
 #Requires:
-#1 - first argument - filename of stack
+#MF_ID - filename of stack
 #MF_KEYPAIR_NAME - keypair name in aws
 #MF_AMI_ID - ami id
 #MF_INSTANCE_TYPE - instance type - t2.large
 #MF_PUBLIC_IP1 - public up from AWS EIP
 #MF_IAM_ROLE - AWS IAM role with S3 full access
 #MF_AVAILABILITY_ZONE - AZ to use.
-
-MF_USER_DATA_LOCATION=file:///mf/cli/userdata/create-simple-vpc-public-subnet-userdata.txt
+#MF_USER_DATA_LOCATION - userdata to use
 
 #create vpc
 MF_VPCID=`aws ec2 create-vpc --cidr-block 172.17.0.0/16 | jq --raw-output '.Vpc.VpcId'`
@@ -91,13 +90,13 @@ JSON_STRING=$( jq -n \
                   --arg securityGroupId2 "$MF_SG_GRPID2" \
                   '{vpcId: $vpcId, subnetId: $subnetId, internetGatewayId: $internetGatewayId, routeTableId: $routeTableId, instanceId: $instanceId, securityGroupId1: $securityGroupId1, securityGroupId2: $securityGroupId2 }' )
 
-echo $JSON_STRING > $1-output.json
+echo $JSON_STRING > $MF_ID-output.json
 
 ls -al .
 
-cat $1-output.json
+cat $MF_ID-output.json
 
-aws s3 cp $1-output.json s3://mqfellow-us-east-1/mq-output/$1-output.json
+aws s3 cp $MF_ID-output.json s3://mqfellow-us-east-1/mq-output/$MF_ID-output.json
 
 
 

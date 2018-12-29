@@ -1,13 +1,13 @@
 #!/bin/sh
 
 #Requires:
-#1 - first argument - filename of stack
+#MF_ID - filename of stack
 
-aws s3 cp s3://mqfellow-us-east-1/mq-output/$1-output.json $1-output.json
-cat $1-output.json
-jq . $1-output.json
+aws s3 cp s3://mqfellow-us-east-1/mq-output/$MF_ID-output.json $MF_ID-output.json
+cat $MF_ID-output.json
+jq . $MF_ID-output.json
 
-mv $1-output.json mq-delete-input.json
+mv $MF_ID-output.json mq-delete-input.json
 
 MF_INSTANCE_IP1=`cat mq-delete-input.json | jq --raw-output '.instanceId'`
 echo $MF_INSTANCE_IP1

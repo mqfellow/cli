@@ -1,11 +1,12 @@
 AWS_DEFAULT_REGION=us-east-2
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
-
+MF_ID=
 MF_KEYPAIR_NAME=
 MF_AMI_ID=
 MF_INSTANCE_TYPE=
 MF_PUBLIC_IP1=
 MF_IAM_ROLE=
 MF_AVAILABILITY_ZONE=us-west-2a
+MF_USER_DATA_LOCATION=file:///mf/cli/userdata/simple-vpc-public-subnet-userdata.txt
 

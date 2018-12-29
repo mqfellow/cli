@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#Requires:
+#MF_ID - filename of stack
+
+aws s3 cp s3://mqfellow-us-east-1/mq-output/$MF_ID-output.json $MF_ID-output.json
+cat $MF_ID-output.json
+jq . $MF_ID-output.json
+

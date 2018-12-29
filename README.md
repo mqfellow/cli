@@ -1,1 +1,1 @@
-* https://mqfellow.io/
+* https://mqfellow.io/cli
