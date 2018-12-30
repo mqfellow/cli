@@ -10,6 +10,7 @@
 #MF_S3_BUCKET_NAME - bucket name
 #MF_AVAILABILITY_ZONE - AZ to use.
 #MF_USER_DATA_LOCATION - userdata to use
+#MF_MQ_LISTENER_PORT1 - mq listener port 1
 
 #create vpc
 MF_VPCID=`aws ec2 create-vpc --cidr-block 172.17.0.0/16 | jq --raw-output '.Vpc.VpcId'`
@@ -59,7 +60,7 @@ aws ec2 authorize-security-group-ingress --group-id $MF_SG_GRPID1 --protocol tcp
 MF_SG_GRPID2=`aws ec2 create-security-group --group-name MQListener --description "Security group for MQListener access" --vpc-id $MF_VPCID | jq --raw-output '.GroupId'`
 echo $MF_SG_GRPID2
 
-aws ec2 authorize-security-group-ingress --group-id $MF_SG_GRPID2 --protocol tcp --port 1414 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id $MF_SG_GRPID2 --protocol tcp --port $MF_MQ_LISTENER_PORT1 --cidr 0.0.0.0/0
 
 MF_INSTANCE_IP1=`aws ec2 run-instances --image-id $MF_AMI_ID --count 1 --instance-type $MF_INSTANCE_TYPE --key-name $MF_KEYPAIR_NAME --security-group-ids $MF_SG_GRPID1 $MF_SG_GRPID2 --subnet-id $MF_SUBNET_ID --iam-instance-profile Name=$MF_IAM_ROLE --user-data $MF_USER_DATA_LOCATION | jq --raw-output '.Instances | .[0].InstanceId'`
 echo $MF_INSTANCE_IP1

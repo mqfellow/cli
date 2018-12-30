@@ -10,3 +10,4 @@ MF_IAM_ROLE=MQFELLOW-S3FullAccess
 MF_S3_BUCKET_NAME=
 MF_AVAILABILITY_ZONE=us-west-2a
 MF_USER_DATA_LOCATION=file:///mf/cli/userdata/dqmgr-userdata-remote-self-signed-cert.txt
+MF_MQ_LISTENER_PORT1=9000
