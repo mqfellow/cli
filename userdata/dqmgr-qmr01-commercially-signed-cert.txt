@@ -1,0 +1,39 @@
+#!/bin/bash -ex
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+uname -a
+cd ~
+su - mqm -c 'dspmqver'
+su - mqm -c 'crtmqm -oa user -u DLQ QMR01'
+cd /tmp
+
+aws s3 sync s3://$MF_S3_BUCKET_NAME/mq-certs/$MF_CERT_PREFIX/$MF_CERT_LABEL /var/mqm/qmgrs/QMR01/ssl/
+chown -R mqm.mqm /var/mqm/qmgrs/QMR01/ssl/
+chmod -R 600 /var/mqm/qmgrs/QMR01/ssl/
+cd ~
+su - mqm -c 'strmqm QMR01'
+cat <<EOF >/tmp/$MF_CERT_LABEL.mqsc
+DEF QL(DLQ) REPLACE
+DEF QL(QL.A) REPLACE
+DEF CHL(QMR01.QM01) CHLTYPE(SDR) REPLACE +
+TRPTYPE(TCP) CONNAME('$MF_MQ_REMOTE_IP1($MF_MQ_REMOTE_PORT1)') +
+XMITQ(QM01)
+DEF QL(QM01) REPLACE USAGE(XMITQ)
+DEF QR(QLMT01) REPLACE +
+RNAME(QL.B) RQMNAME(QM01) +
+XMITQ(QM01)
+DEF CHL(QM01.QMR01) CHLTYPE(RCVR) REPLACE +
+TRPTYPE(TCP)
+DEF LISTENER(LISTENER.TCP) TRPTYPE(TCP) PORT($MF_MQ_LISTENER_PORT1) CONTROL(QMGR)
+START LISTENER(LISTENER.TCP)
+START CHL(QMR01.QM01)
+START CHL(QM01.QMR01)
+ALTER QMGR CHLAUTH(DISABLED)
+ALTER QMGR CONNAUTH(' ')
+ALTER CHANNEL(QMR01.QM01) CHLTYPE(SDR) SSLCIPH(TLS_RSA_WITH_AES_256_CBC_SHA256)
+ALTER CHANNEL(QM01.QMR01) CHLTYPE(RCVR) SSLCIPH(TLS_RSA_WITH_AES_256_CBC_SHA256)
+REFRESH SECURITY
+EOF
+su - mqm -c 'runmqsc QMR01 < /tmp/$MF_CERT_LABEL.mqsc > /tmp/$MF_CERT_LABEL-report.log'
+cat /tmp/$MF_CERT_LABEL-report.log
+su - mqm -c 'dspmq'
+

@@ -1,17 +1,17 @@
 #!/bin/sh
 
-VERSION=1.0.0
+VERSION=1.0.1
 AUTHOR=mqfellow@mqfellow.io
 printenv
 
 CURDIR=`pwd`
-mkdir -p mftmp/$MF_CERTREQ_PREFIX
-cd mftmp/$MF_CERTREQ_PREFIX
+mkdir -p mftmp/$MF_CERTREQ_PREFIX/$MF_CERTREQ_LABEL
+cd mftmp/$MF_CERTREQ_PREFIX/$MF_CERTREQ_LABEL
 runmqakm -keydb -create -db key.kdb -pw $MF_CERTREQ_PASSWD -type cms -stash
 runmqakm -cert -list -db key.kdb -stashed
 runmqakm -certreq -create -db key.kdb -stashed -label $MF_CERTREQ_LABEL -dn "$MF_DN" -size $MF_CERTREQ_SIZE -file $MF_CERTREQ_LABEL.csr
 cat $MF_CERTREQ_LABEL.csr
 ls -al
 cd $CURDIR
-aws s3 sync ./mftmp s3://$MF_CERTREQ_S3_BUCKET/mq-certs
+aws s3 sync ./mftmp/$MF_CERTREQ_PREFIX/$MF_CERTREQ_LABEL s3://$MF_CERTREQ_S3_BUCKET/mq-certs/$MF_CERTREQ_PREFIX/$MF_CERTREQ_LABEL
 

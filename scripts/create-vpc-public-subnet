@@ -1,5 +1,7 @@
 #!/bin/sh
 
+bash /mf/cli/bin/mf-replace.sh
+ 
 #Requires:
 #MF_ID - filename of stack
 #MF_KEYPAIR_NAME - keypair name in aws
